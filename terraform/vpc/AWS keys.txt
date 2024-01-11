@@ -1,0 +1,4 @@
+AKIA2UC3ENMI7QEQELG7 -> Access keys
+DfY8VBQlwjSaPErpOjk1TG7YUpsFM5iwJwx7MvO9 - secret keys
+
+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 -> gittoken

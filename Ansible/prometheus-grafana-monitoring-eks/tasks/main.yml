@@ -1,0 +1,116 @@
+---
+# tasks file for prometheus-grafana-monitoring-eks
+- name: Creating prometheus user for monitoring
+  ansible.builtin.user:
+    name: prometheus
+
+- name: downloading prometheus package
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus/prometheus/releases/download/v2.47.1/prometheus-2.47.1.linux-amd64.tar.gz
+    dest: /home/devops
+
+- name: Extracting tar file
+  ansible.builtin.unarchive:
+    src: /home/devops/prometheus-2.47.1.linux-amd64.tar.gz
+    dest: /home/devops/
+    remote_src: yes
+- name: check if prometheus folder already exists
+  stat:
+    path: /home/devops/prometheus
+  register: prom_folder
+
+- name: renaming the extrated folder
+  command: "mv /home/devops/prometheus-2.47.1.linux-amd64 /home/devops/prometheus"
+  when: not prom_folder.stat.exists
+
+- name: creating folder for prometheus data and etc
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /data
+    - /etc/prometheus
+
+
+- name: copying promtool files from extracted folder
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /usr/bin
+    remote_src: true
+    mode: 777
+  with_items:
+    - /home/devops/prometheus/promtool
+    - /home/devops/prometheus/prometheus
+
+- name: copying remaining folder to prometheus cli location
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /etc/prometheus
+    remote_src: true
+  with_items:
+    - /home/devops/prometheus/consoles
+    - /home/devops/prometheus/console_libraries
+    - /home/devops/prometheus/prometheus.yml
+
+- name: copying service file.
+  ansible.builtin.copy:
+    src: prometheus.service
+    dest: /etc/systemd/system/
+
+- name: start prometheus service
+  command: "systemctl start prometheus"
+
+- name: start prometheus enable
+  command: "systemctl enable prometheus"
+
+- name: downloading the tar file
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+    dest: /home/devops
+
+- name: extracting the tar file
+  ansible.builtin.unarchive:
+    src: /home/devops/node_exporter-1.6.1.linux-amd64.tar.gz
+    dest: /home/devops/
+    remote_src: yes
+
+- name: moving node exportor files to /usr/bin
+  ansible.builtin.copy:
+    src: /home/devops/node_exporter-1.6.1.linux-amd64/node_exporter
+    dest: /usr/bin
+    remote_src: yes
+    mode: 777
+
+- name: copying the service file
+  ansible.builtin.copy:
+    src: node_exporter.service
+    dest:  /etc/systemd/system/
+    mode: 777
+
+- name: starting the node_exporter service
+  service:
+    name: node_exporter
+    state: started
+    enabled: yes
+
+- name: import grafana key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://rpm.grafana.com/gpg.key
+
+- name: adding grafana repo to yum
+  ansible.builtin.yum_repository:
+    name: grafana
+    description: grafana repo
+    baseurl: https://rpm.grafana.com
+    gpgcheck: yes
+
+- name: installing grafana
+  command: "yum install grafana -y"
+
+- name: start the grafana service
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
+
