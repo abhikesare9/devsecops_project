@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+    tools {
+        jdk 'jdk17'
+        nodejs 'node16'
+    }
+    environment{
+        SCANNER_HOME= tool 'sonar-scanner'
+    }
+
+    stages {
+        stage('clear workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('git checkout'){
+           steps {
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/N4si/DevSecOps-Project.git'
+            }
+        }
+        stage('sonarqube analysis'){
+            steps{
+            withSonarQubeEnv('sonar-server'){
+                sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
+                    -Dsonar.projectKey=Netflix'''
+            }
+            }
+        }
+        stage('quality gates'){
+            steps{
+                 waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh "npm install"
+            }
+    }
+    stage('owasp scan'){
+        steps{
+            dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+            dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        }
+    }
+    stage('trivy image scannig'){
+        steps{
+            sh 'trivy fs . > trivey.txt'
+        }
+    }
+    stage('Docker build and push'){
+        steps{
+            script{
+            withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
+                sh "docker build --build-arg TMDB_V3_API_KEY=b6e2dbc1c5fe379b61bd7a1810e7b203 -t netflix ."
+                sh "docker tag netflix abhikesare9/netflix:latest "
+                sh "docker push abhikesare9/netflix:latest "
+        }
+                
+            }
+        }
+    }
+    stage("TRIVY"){
+            steps{
+                sh "trivy image abhikesare9/netflix:latest > trivyimage.txt" 
+            }
+        }
+    stage('Run docker  container'){
+        steps{
+            sh 'docker run -d  --name netflix -p 8081:80 abhikesare9/netflix:latest'
+        }
+    }
+}
+}
