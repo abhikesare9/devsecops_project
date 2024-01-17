@@ -32,10 +32,17 @@ resource "aws_security_group" "cicd_security_group"{
     }
     ingress {
         description = "sonarqube port"
-        from_port   =  9090
-        to_port     =  9090
+        from_port   =  9000
+        to_port     =  9000
         protocol    = "tcp"
         cidr_blocks  = ["0.0.0.0/0"] 
+    }
+    egress {
+        description = "outbound traffic"
+        from_port   = 0
+        to_port     = 0
+        protocol    = -1
+        cidr_blocks = ["0.0.0.0/0"]
     }
 }
 
@@ -48,6 +55,23 @@ resource "aws_instance" "cicd_server"{
     key_name      = var.ssh_key_name
     associate_public_ip_address = true
     vpc_security_group_ids = [aws_security_group.cicd_security_group.id]
+    user_data     = <<-EOL
+    #!/bin/bash -xe
+    yum install docker -y
+    systemctl start docker
+    systemctl enable docker 
+    yum install java-17-amazon-corretto-headless -y
+    rpm -ivh https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.rpm
+    wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+    yum update -y
+    yum upgrade -y
+    systemctl start jenkins
+    systemctl enable jenkins
+    yum install ansible -y
+    
+    EOL
     
     tags  = {
         Department = "Devops_infra"
@@ -94,6 +118,13 @@ resource "aws_security_group" "monitoring_security_group"{
         to_port     =  9090
         protocol    = "tcp"
         cidr_blocks  = ["0.0.0.0/0"] 
+    }
+    egress {
+        description = "outbound traffic"
+        from_port   = 0
+        to_port     = 0
+        protocol    = -1
+        cidr_blocks = ["0.0.0.0/0"]
     }
 }
 

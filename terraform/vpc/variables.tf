@@ -1,6 +1,6 @@
 variable "region" {
   type        = string
-  default     = "us-east-1"
+  default     = "us-west-1"
   description = "Default region to provision the infrastructure"
 }
 variable "cidr_block" {
@@ -25,12 +25,18 @@ variable "private_subnet_cidrs" {
 variable "azs" {
   type        = list(string)
   description = "Availability Zones"
-  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  default     = ["us-west-1a", "us-west-1b", "us-west-1c"]
 }
 
 
 variable bucket_name {
   type        = string
-  default     = "devops-infra-backup"
+  default     = "devops-infra-backup-terraform"
   description = "terraform backend s3 bucket"
+}
+
+variable profile {
+  type        = string
+  default     = "dev"
+  description = "aws profile for creation"
 }

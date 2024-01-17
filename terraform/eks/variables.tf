@@ -68,6 +68,11 @@ variable min_worker_nodes {
   default     = "1"
   description = "min number of worker nodes"
 }
+variable profile {
+  type        = string
+  default     = "dev"
+  description = "aws resource creation profile"
+}
 
 
 

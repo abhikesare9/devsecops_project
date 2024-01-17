@@ -10,3 +10,9 @@ variable bucket_name {
   default     = "devops-infra-backup"
   description = "This bucket is mainly responsible for storing the terraform tfstate files."
 }
+
+variable profile {
+  type        = string
+  default     = "dev"
+  description = "aws profile for resource creation"
+}

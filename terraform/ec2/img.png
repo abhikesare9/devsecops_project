@@ -1,0 +1,93 @@
+digraph {
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] aws_instance.cicd_server (expand)" [label = "aws_instance.cicd_server", shape = "box"]
+		"[root] aws_instance.monitoring_server (expand)" [label = "aws_instance.monitoring_server", shape = "box"]
+		"[root] aws_security_group.cicd_security_group (expand)" [label = "aws_security_group.cicd_security_group", shape = "box"]
+		"[root] aws_security_group.monitoring_security_group (expand)" [label = "aws_security_group.monitoring_security_group", shape = "box"]
+		"[root] module.vpc.aws_eip.nat (expand)" [label = "module.vpc.aws_eip.nat", shape = "box"]
+		"[root] module.vpc.aws_internet_gateway.igw (expand)" [label = "module.vpc.aws_internet_gateway.igw", shape = "box"]
+		"[root] module.vpc.aws_nat_gateway.nat (expand)" [label = "module.vpc.aws_nat_gateway.nat", shape = "box"]
+		"[root] module.vpc.aws_route_table.private_subnet_rt (expand)" [label = "module.vpc.aws_route_table.private_subnet_rt", shape = "box"]
+		"[root] module.vpc.aws_route_table.public_subnet_rt (expand)" [label = "module.vpc.aws_route_table.public_subnet_rt", shape = "box"]
+		"[root] module.vpc.aws_route_table_association.private_subnet_asso (expand)" [label = "module.vpc.aws_route_table_association.private_subnet_asso", shape = "box"]
+		"[root] module.vpc.aws_route_table_association.public_subnet_asso (expand)" [label = "module.vpc.aws_route_table_association.public_subnet_asso", shape = "box"]
+		"[root] module.vpc.aws_subnet.private_subnets (expand)" [label = "module.vpc.aws_subnet.private_subnets", shape = "box"]
+		"[root] module.vpc.aws_subnet.public_subnets (expand)" [label = "module.vpc.aws_subnet.public_subnets", shape = "box"]
+		"[root] module.vpc.aws_vpc.DevOps_infra (expand)" [label = "module.vpc.aws_vpc.DevOps_infra", shape = "box"]
+		"[root] module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"]" [label = "module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"]", shape = "diamond"]
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"]" [label = "provider[\"registry.terraform.io/hashicorp/aws\"]", shape = "diamond"]
+		"[root] var.ami_id" [label = "var.ami_id", shape = "note"]
+		"[root] var.bucket_name" [label = "var.bucket_name", shape = "note"]
+		"[root] var.instance_type" [label = "var.instance_type", shape = "note"]
+		"[root] var.profile" [label = "var.profile", shape = "note"]
+		"[root] var.region" [label = "var.region", shape = "note"]
+		"[root] var.ssh_key_name" [label = "var.ssh_key_name", shape = "note"]
+		"[root] aws_instance.cicd_server (expand)" -> "[root] aws_security_group.cicd_security_group (expand)"
+		"[root] aws_instance.cicd_server (expand)" -> "[root] module.vpc.output.public_subnet_id (expand)"
+		"[root] aws_instance.cicd_server (expand)" -> "[root] var.ami_id"
+		"[root] aws_instance.cicd_server (expand)" -> "[root] var.instance_type"
+		"[root] aws_instance.cicd_server (expand)" -> "[root] var.ssh_key_name"
+		"[root] aws_instance.monitoring_server (expand)" -> "[root] aws_security_group.monitoring_security_group (expand)"
+		"[root] aws_instance.monitoring_server (expand)" -> "[root] module.vpc.output.public_subnet_id (expand)"
+		"[root] aws_instance.monitoring_server (expand)" -> "[root] var.ami_id"
+		"[root] aws_instance.monitoring_server (expand)" -> "[root] var.instance_type"
+		"[root] aws_instance.monitoring_server (expand)" -> "[root] var.ssh_key_name"
+		"[root] aws_security_group.cicd_security_group (expand)" -> "[root] module.vpc.output.vpc_id (expand)"
+		"[root] aws_security_group.cicd_security_group (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] aws_security_group.monitoring_security_group (expand)" -> "[root] module.vpc.output.vpc_id (expand)"
+		"[root] aws_security_group.monitoring_security_group (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] module.vpc (close)" -> "[root] module.vpc.aws_route_table_association.private_subnet_asso (expand)"
+		"[root] module.vpc (close)" -> "[root] module.vpc.aws_route_table_association.public_subnet_asso (expand)"
+		"[root] module.vpc (close)" -> "[root] module.vpc.output.private_subnet_id (expand)"
+		"[root] module.vpc (close)" -> "[root] module.vpc.output.public_subnet_id (expand)"
+		"[root] module.vpc (close)" -> "[root] module.vpc.output.vpc_id (expand)"
+		"[root] module.vpc (close)" -> "[root] module.vpc.var.azs (expand)"
+		"[root] module.vpc (close)" -> "[root] module.vpc.var.bucket_name (expand)"
+		"[root] module.vpc.aws_eip.nat (expand)" -> "[root] module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] module.vpc.aws_internet_gateway.igw (expand)" -> "[root] module.vpc.aws_vpc.DevOps_infra (expand)"
+		"[root] module.vpc.aws_nat_gateway.nat (expand)" -> "[root] module.vpc.aws_eip.nat (expand)"
+		"[root] module.vpc.aws_nat_gateway.nat (expand)" -> "[root] module.vpc.aws_internet_gateway.igw (expand)"
+		"[root] module.vpc.aws_nat_gateway.nat (expand)" -> "[root] module.vpc.aws_subnet.public_subnets (expand)"
+		"[root] module.vpc.aws_route_table.private_subnet_rt (expand)" -> "[root] module.vpc.aws_nat_gateway.nat (expand)"
+		"[root] module.vpc.aws_route_table.public_subnet_rt (expand)" -> "[root] module.vpc.aws_internet_gateway.igw (expand)"
+		"[root] module.vpc.aws_route_table_association.private_subnet_asso (expand)" -> "[root] module.vpc.aws_route_table.private_subnet_rt (expand)"
+		"[root] module.vpc.aws_route_table_association.private_subnet_asso (expand)" -> "[root] module.vpc.aws_subnet.private_subnets (expand)"
+		"[root] module.vpc.aws_route_table_association.public_subnet_asso (expand)" -> "[root] module.vpc.aws_route_table.public_subnet_rt (expand)"
+		"[root] module.vpc.aws_route_table_association.public_subnet_asso (expand)" -> "[root] module.vpc.aws_subnet.public_subnets (expand)"
+		"[root] module.vpc.aws_subnet.private_subnets (expand)" -> "[root] module.vpc.aws_vpc.DevOps_infra (expand)"
+		"[root] module.vpc.aws_subnet.private_subnets (expand)" -> "[root] module.vpc.var.private_subnet_cidrs (expand)"
+		"[root] module.vpc.aws_subnet.public_subnets (expand)" -> "[root] module.vpc.aws_vpc.DevOps_infra (expand)"
+		"[root] module.vpc.aws_subnet.public_subnets (expand)" -> "[root] module.vpc.var.public_subnet_cidrs (expand)"
+		"[root] module.vpc.aws_vpc.DevOps_infra (expand)" -> "[root] module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] module.vpc.aws_vpc.DevOps_infra (expand)" -> "[root] module.vpc.var.cidr_block (expand)"
+		"[root] module.vpc.output.private_subnet_id (expand)" -> "[root] module.vpc.aws_subnet.private_subnets (expand)"
+		"[root] module.vpc.output.public_subnet_id (expand)" -> "[root] module.vpc.aws_subnet.public_subnets (expand)"
+		"[root] module.vpc.output.vpc_id (expand)" -> "[root] module.vpc.aws_vpc.DevOps_infra (expand)"
+		"[root] module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] module.vpc.aws_route_table_association.private_subnet_asso (expand)"
+		"[root] module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] module.vpc.aws_route_table_association.public_subnet_asso (expand)"
+		"[root] module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"]" -> "[root] module.vpc.var.profile (expand)"
+		"[root] module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"]" -> "[root] module.vpc.var.region (expand)"
+		"[root] module.vpc.var.azs (expand)" -> "[root] module.vpc (expand)"
+		"[root] module.vpc.var.bucket_name (expand)" -> "[root] module.vpc (expand)"
+		"[root] module.vpc.var.cidr_block (expand)" -> "[root] module.vpc (expand)"
+		"[root] module.vpc.var.private_subnet_cidrs (expand)" -> "[root] module.vpc (expand)"
+		"[root] module.vpc.var.profile (expand)" -> "[root] module.vpc (expand)"
+		"[root] module.vpc.var.public_subnet_cidrs (expand)" -> "[root] module.vpc (expand)"
+		"[root] module.vpc.var.region (expand)" -> "[root] module.vpc (expand)"
+		"[root] output.cicd_server_ip (expand)" -> "[root] aws_instance.cicd_server (expand)"
+		"[root] output.monitoring_server_ip (expand)" -> "[root] aws_instance.monitoring_server (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_instance.cicd_server (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_instance.monitoring_server (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"]" -> "[root] var.profile"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"]" -> "[root] var.region"
+		"[root] root" -> "[root] module.vpc (close)"
+		"[root] root" -> "[root] module.vpc.provider[\"registry.terraform.io/hashicorp/aws\"] (close)"
+		"[root] root" -> "[root] output.cicd_server_ip (expand)"
+		"[root] root" -> "[root] output.monitoring_server_ip (expand)"
+		"[root] root" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)"
+		"[root] root" -> "[root] var.bucket_name"
+	}
+}
+

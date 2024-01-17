@@ -1,5 +1,6 @@
 provider "aws" {
   region = var.region
+  profile = var.profile
 }
 
 
@@ -19,8 +20,9 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket = "devops-infra-backup"
+    bucket = "devops-infra-backup-terraform"
     key    = "terraform/backend/terraform.tfstate"
-    region = "us-east-1"
+    region = "us-west-1"
+    profile = "dev"
   }
 }
