@@ -3,7 +3,11 @@
 - name: Creating prometheus user for monitoring
   ansible.builtin.user:
     name: prometheus
-
+- name: creating devops directory
+  ansible.builtin.file:
+    state: directory
+    path: /home/devops
+      
 - name: downloading prometheus package
   ansible.builtin.get_url:
     url: https://github.com/prometheus/prometheus/releases/download/v2.47.1/prometheus-2.47.1.linux-amd64.tar.gz

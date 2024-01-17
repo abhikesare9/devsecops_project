@@ -1,0 +1,1 @@
+10.168.227.237 ansible_ussh_ser=root ansible_ssh_pass=Abz00ba@123 ansible_ssh_protocol=ssh
